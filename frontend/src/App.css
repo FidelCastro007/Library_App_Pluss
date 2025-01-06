@@ -1,0 +1,644 @@
+/* General Variables */
+:root {
+  --primary-color: #4a90e2;
+  --secondary-color: #ffd700;
+  --accent-color: #ff8c00;
+  --background-color: #f4f4f9;
+  --container-background: #ffffff;
+  --gradient-background: linear-gradient(to right, #f4f4f9, #eaf4fc);
+  --button-gradient: linear-gradient(135deg, #4a90e2, #357abf);
+  --radius: 10px;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  --text-color: #333;
+  --fade-in-duration: 1s;
+}
+
+/* General Styles */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: var(--gradient-background);
+  color: var(--text-color);
+  animation: fade-in var(--fade-in-duration) ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+h2 {
+  color: var(--primary-color);
+  text-align: center;
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+
+/* Styling for the select dropdown */
+select {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  cursor: pointer;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+select:hover {
+  background-color: #e6e6e6; /* Slight hover effect */
+}
+
+select:focus {
+  border-color: #007BFF; /* Highlight on focus */
+  outline: none;
+}
+
+/* Styling for the checkbox and label */
+label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  color: #333;
+  cursor: pointer;
+}
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #007BFF; /* For modern browsers */
+}
+
+/* Add responsive design */
+@media (max-width: 768px) {
+  div {
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: stretch;
+  }
+
+  input[type="text"],
+  select {
+    width: 100%;
+  }
+}
+
+
+/* Navbar */
+.navbar {
+  display: flex;
+  width: 500px;
+  justify-content: center; /* Center align the links *
+  background-color: #f4f4f4; /* Light background for the navbar */
+  padding: 5px 0; /* Add vertical spacing */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+.navbar a {
+  text-decoration: none;
+  margin: 0 10px; /* Spacing between links */
+  color: #333; /* Neutral text color */
+  font-size: 16px; /* Adjust font size */
+  font-weight: bold;
+  transition: color 0.3s; /* Smooth hover effect */
+}
+
+.navbar a:hover {
+  color: #007bff; /* Highlighted link color on hover */
+}
+
+.navbar a::after {
+  content: "";
+  display: block;
+  height: 3px;
+  background: linear-gradient(90deg, var(--secondary-color), #fff, var(--secondary-color));
+  background-size: 200%;
+  transform: translateX(25%);
+  transition: transform 0.3s ease;
+}
+
+.navbar a:hover::after {
+  transform: translateX(0);
+  animation: shimmer 1.0s infinite linear;
+}
+
+/* App Container */
+.app-container {
+  display: flex;
+  flex-direction: column; /* Arrange elements vertically */
+  min-height: 100vh;
+  width: 100%;
+  background: var(--gradient-background);
+}
+
+/* Containers */
+.container {
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 1200px;
+  background: var(--container-background);
+  border-radius: var(--radius);
+  box-shadow: var(--box-shadow);
+  animation: bounce-in 0.8s ease-in-out;
+}
+
+.login-container, .register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  background-color: var(--background-color);
+  padding: 20px;
+}
+
+/* Home Button */
+.home-btn {
+  background: linear-gradient(135deg, #6bcef6, #409eff);
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  box-shadow: var(--box-shadow);
+  transition: all 0.3s ease;
+}
+
+.home-btn:hover {
+  background: linear-gradient(135deg, #409eff, #0066cc);
+  box-shadow: var(--hover-shadow);
+}
+
+/* Login Button */
+.login-btn {
+  background: linear-gradient(135deg, #58a6ff, #0366d6);
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  box-shadow: var(--box-shadow);
+  transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+  background: linear-gradient(135deg, #0366d6, #0241a1);
+  box-shadow: var(--hover-shadow);
+}
+
+/* Register Button */
+.register-btn {
+  background: linear-gradient(135deg, #72d572, #4caf50);
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  box-shadow: var(--box-shadow);
+  transition: all 0.3s ease;
+}
+
+.register-btn:hover {
+  background: linear-gradient(135deg, #4caf50, #357a38);
+  box-shadow: var(--hover-shadow);
+}
+
+/* Book Button */
+.book-btn {
+  background: linear-gradient(135deg, #f7b267, #f76c5e);
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  box-shadow: var(--box-shadow);
+  transition: all 0.3s ease;
+}
+
+.book-btn:hover {
+  background: linear-gradient(135deg, #f76c5e, #c54a3e);
+  box-shadow: var(--hover-shadow);
+}
+
+/* Genre Dropdown */
+.genre-select {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: var(--radius);
+  background-color: #f8f8f8;
+  cursor: pointer;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.genre-select:hover {
+  background-color: #e6e6e6;
+}
+
+.genre-select:focus {
+  border-color: #007BFF;
+  outline: none;
+}
+
+/* Book Form Container */
+.book-form {
+  margin: 1px auto;
+  max-width: 500px;
+  padding: 15px;
+  background: var(--container-background);
+  border-radius: var(--radius);
+  box-shadow: var(--box-shadow);
+  animation: fade-in 1s ease-in-out;
+}
+
+/* Title Animations */
+.book-form h1, .book-form h2 {
+  text-align: center;
+  color: var(--primary-color);
+  margin-bottom: 0px;
+  margin-top: 1px;
+  animation: slide-down 0.8s ease-out;
+}
+
+.book-form h2 {
+  font-size: 1.5rem;
+  color: var(--secondary-color);
+  animation: slide-up 1s ease-out;
+}
+
+/* Input Fields */
+.book-form input[type="text"],
+.book-form input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  animation: fade-in-fields 1s ease-in-out;
+}
+
+.book-form input[type="text"]:focus,
+.book-form input[type="number"]:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+/* Checkbox and Label */
+.book-form label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  animation: fade-in-fields 1.2s ease-in-out;
+}
+
+.book-form input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+}
+
+/* Buttons */
+.book-form button {
+  background: var(--button-gradient);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  animation: scale-up 1.5s ease-in-out;
+}
+
+.book-form button:hover {
+  background: linear-gradient(135deg, #357abf, #1e5f93);
+  transform: translateY(-2px);
+  box-shadow: var(--hover-shadow);
+}
+
+.book-form button:active {
+  transform: translateY(1px);
+}
+
+/* Error Message */
+.book-form p {
+  color: red;
+  text-align: center;
+  animation: fade-in 1s ease-in-out;
+}
+
+/* Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in-fields {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scale-up {
+  from {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.success {
+  color: green;
+  font-weight: bold;
+}
+
+form {
+  background-color: white;
+  padding: 30px;
+  border-radius: var(--radius);
+  box-shadow: var(--box-shadow);
+  width: 300px;
+  text-align: center;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+p {
+  color: red;
+}
+
+/* Delete Button */
+.book-card button.delete {
+  background: linear-gradient(45deg, #ff4d4d, #ff1a1a); /* Gradient red */
+  color: white;
+  border: none;
+  margin-right: 120px;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.book-card button.delete:hover {
+  background: linear-gradient(45deg, #ff1a1a, #ff4d4d); /* Reverse gradient */
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Issue Button */
+.book-card button.issue {
+  background: linear-gradient(45deg, #4d94ff, #006bb3); /* Gradient blue */
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-right: 110px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.book-card button.issue:hover {
+  background: linear-gradient(45deg, #006bb3, #4d94ff); /* Reverse gradient */
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Return Button */
+.book-card button.return {
+  background: linear-gradient(45deg, #4dff4d, #33cc33); /* Gradient green */
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.book-card button.return:hover {
+  background: linear-gradient(45deg, #33cc33, #4dff4d); /* Reverse gradient */
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.message {
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #f8d7da; /* Light red background */
+  color: #721c24; /* Dark red text */
+  border: 1px solid #f5c6cb; /* Light red border */
+  border-radius: 5px;
+}
+
+
+/* Components */
+.staff-container, .transaction-container, .book-container, .member-container {
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 1000px;
+  background: var(--container-background);
+  border-radius: var(--radius);
+  box-shadow: var(--box-shadow);
+}
+
+.staff-list, .transaction-table, .book-grid, .member-list {
+  width: 100%;
+  padding: 0;
+}
+
+.staff-item, .member-card {
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #eaf4fc, #d5e9f8);
+  box-shadow: var(--box-shadow);
+  animation: fade-in 0.5s ease-in-out;
+}
+
+.transaction-table th,
+.transaction-table td {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.transaction-table th {
+  background: linear-gradient(135deg, #f0f8ff, #dbe9f5);
+  color: #333;
+}
+
+.transaction-table tr:hover {
+  background-color: #f1f9ff;
+}
+
+.status-returned {
+  color: green;
+  font-weight: bold;
+}
+
+.status-overdue {
+  color: red;
+  font-weight: bold;
+}
+
+.book-card {
+  padding: 20px;
+  background: linear-gradient(135deg, #fff8e1, #ffe4b2);
+  border-radius: var(--radius);
+  text-align: center;
+  box-shadow: var(--box-shadow);
+  animation: pop 0.5s ease-in-out;
+}
+
+.book-card h3 {
+  color: var(--accent-color);
+}
+
+/* Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .login-container, .register-container, .staff-container, .transaction-container, .book-container, .member-container {
+    padding: 20px;
+    width: 90%;
+  }
+
+  .navbar {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .navbar a {
+    margin: 10px 0;
+  }
+}
+
+/* Buttons */
+/* button {
+  background: var(--button-gradient);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+button:hover {
+  background: linear-gradient(135deg, #35bf9c, #1e933b);
+  transform: translateY(-2px);
+  box-shadow: var(--hover-shadow);
+}
+
+button:active {
+  transform: translateY(1px);
+} */

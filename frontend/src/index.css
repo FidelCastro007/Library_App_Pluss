@@ -1,0 +1,333 @@
+/* General Variables
+:root {
+  --primary-color: #4a90e2;
+  --secondary-color: #ffd700;
+  --accent-color: #ff8c00;
+  --background-color: #f4f4f9;
+  --container-background: #ffffff;
+  --gradient-background: linear-gradient(to right, #f4f4f9, #eaf4fc);
+  --button-gradient: linear-gradient(135deg, #4a90e2, #357abf);
+  --radius: 10px;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --hover-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  --fade-in-duration: 1s;
+}
+
+/* General Styles 
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: var(--gradient-background);
+  color: var(--text-color);
+  animation: fade-in var(--fade-in-duration) ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+h2 {
+  color: var(--primary-color);
+  text-align: center;
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+/* Navbar 
+.navbar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: var(--primary-color);
+  padding: 15px;
+  border-bottom: 2px solid #357abf;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.navbar a:hover {
+  color: var(--secondary-color);
+  transform: scale(1.1);
+}
+
+.navbar a::after {
+  content: "";
+  display: block;
+  height: 3px;
+  background: linear-gradient(90deg, var(--secondary-color), #fff, var(--secondary-color));
+  background-size: 200%;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+.navbar a:hover::after {
+  transform: translateX(0);
+  animation: shimmer 1.2s infinite linear;
+}
+
+/* Containers 
+.container {
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 1200px;
+  background: var(--container-background);
+  border-radius: var(--radius);
+  box-shadow: var(--box-shadow);
+  animation: bounce-in 0.8s ease-in-out;
+}
+/* App.css or Login.css 
+
+.login-container, .register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f0f0;
+  padding: 20px;
+}
+
+form {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  text-align: center;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+p {
+  color: red;
+}
+
+/* Buttons 
+button {
+  background: var(--button-gradient);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+button:hover {
+  background: linear-gradient(135deg, #357abf, #1e5f93);
+  transform: translateY(-2px);
+  box-shadow: var(--hover-shadow);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+/* Staff Component 
+.staff-container {
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 800px;
+  background-color: var(--container-background);
+  border-radius: var(--radius);
+  box-shadow: var(--box-shadow);
+}
+
+.staff-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.staff-item {
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 5px;
+  background: #eaf4fc;
+  box-shadow: var(--box-shadow);
+  animation: fade-in 0.5s ease-in-out;
+}
+
+/* Transaction Component 
+.transaction-container {
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 900px;
+  background-color: var(--container-background);
+  border-radius: var(--radius);
+  box-shadow: var(--box-shadow);
+}
+
+.transaction-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.transaction-table th,
+.transaction-table td {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.transaction-table th {
+  background: linear-gradient(135deg, #f0f8ff, #dbe9f5);
+  color: #333;
+}
+
+.transaction-table tr:hover {
+  background-color: #f1f9ff;
+}
+
+.status-returned {
+  color: green;
+  font-weight: bold;
+}
+
+.status-overdue {
+  color: red;
+  font-weight: bold;
+}
+
+/* Book Component 
+.book-container {
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 1000px;
+  background-color: var(--container-background);
+  border-radius: var(--radius);
+  box-shadow: var(--box-shadow);
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.book-card {
+  padding: 20px;
+  background: linear-gradient(135deg, #fff8e1, #ffe4b2);
+  border-radius: var(--radius);
+  text-align: center;
+  box-shadow: var(--box-shadow);
+  animation: pop 0.5s ease-in-out;
+}
+
+.book-card h3 {
+  color: var(--accent-color);
+}
+
+/* Member Component 
+.member-container {
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 800px;
+  background-color: var(--container-background);
+  border-radius: var(--radius);
+  box-shadow: var(--box-shadow);
+}
+
+.member-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.member-card {
+  padding: 15px;
+  width: calc(50% - 20px);
+  background: linear-gradient(135deg, #e7f9f3, #c8f7dc);
+  border-radius: var(--radius);
+  box-shadow: var(--box-shadow);
+  animation: fade-in 0.5s ease-in-out;
+}
+
+.member-card h3 {
+  margin-bottom: 10px;
+  font-size: 1.2em;
+  color: #2ecc71;
+}
+
+/* Buttons 
+button {
+  background: var(--button-gradient);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background: linear-gradient(135deg, #357abf, #1e5f93);
+  transform: translateY(-2px);
+  box-shadow: var(--hover-shadow);
+}
+
+/* Animations 
+@keyframes fade-in {
+  from {
+      opacity: 0;
+  }
+  to {
+      opacity: 1;
+  }
+}
+
+@keyframes bounce-in {
+  0% {
+      opacity: 0;
+      transform: scale(0.9);
+  }
+  50% {
+      transform: scale(1.05);
+  }
+  100% {
+      opacity: 1;
+      transform: scale(1);
+  }
+}
+
+@keyframes pop {
+  from {
+      opacity: 0;
+      transform: scale(0.9);
+  }
+  to {
+      opacity: 1;
+      transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  100% {
+      transform: translateX(100%);
+  }
+} */
