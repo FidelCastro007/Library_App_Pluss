@@ -1,84 +1,79 @@
 const express = require("express");
 const Transaction = require("../models/Transaction");
-const Member = require("../models/Member");
 const Book = require("../models/Book");
+const User = require("../models/User");
 
 const router = express.Router();
 
-// @route GET /api/transactions
-// @desc Get all transactions
-router.get("/", async (req, res) => {
+// @route POST /api/transactions/issue
+// @desc Issue a book to a member
+router.post("/issue", async (req, res) => {
   try {
-    const transactions = await Transaction.find().populate("member book");
-    res.status(200).json(transactions);
-  } catch (error) {
-    res.status(500).json({ message: "Error retrieving transactions", error });
-  }
-});
+    const { memberId, bookId, staffId } = req.body;
 
-// @route POST /api/transactions
-// @desc Add a new transaction
-router.post("/", async (req, res) => {
-  const { memberId, bookId, issueDate, returnDate, status } = req.body;
-
-  // Validate fields
-  if (!memberId || !bookId || !issueDate || !status) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
-
-  try {
+    // Validate if the book and member exist
     const book = await Book.findById(bookId);
-    if (!book || book.availableCopies <= 0) {
-      return res.status(400).json({ message: "Book is unavailable" });
+    const member = await User.findById(memberId);
+    if (!book || !member) {
+      return res.status(400).json({ message: "Invalid member or book" });
     }
 
-    const newTransaction = new Transaction({
+    // Check if the book is available
+    if (book.availableCopies <= 0) {
+      return res.status(400).json({ message: "No available copies to issue" });
+    }
+
+    // Create new transaction record
+    const transaction = new Transaction({
       member: memberId,
       book: bookId,
-      issueDate,
-      returnDate,
-      status,
+      issuedBy: staffId,
+      issueDate: Date.now(),
+      status: "Issued",
     });
 
-    const savedTransaction = await newTransaction.save();
+    // Save transaction and update book availability
+    await transaction.save();
     book.availableCopies -= 1;
     await book.save();
 
-    res.status(201).json(savedTransaction);
+    res.status(201).json({ message: "Book issued successfully", transaction });
   } catch (error) {
-    res.status(500).json({ message: "Error creating transaction", error });
+    res.status(500).json({ message: "Error issuing book", error });
   }
 });
 
-// @route PATCH /api/transactions/:id/return
-// @desc Mark a transaction as returned
-router.patch("/:id/return", async (req, res) => {
+// @route POST /api/transactions/return
+// @desc Return a book and update status
+router.post("/return", async (req, res) => {
   try {
-    const transaction = await Transaction.findById(req.params.id).populate("book");
+    const { transactionId, returnDate } = req.body;
+
+    // Find the transaction
+    const transaction = await Transaction.findById(transactionId);
     if (!transaction) {
-      return res.status(404).json({ message: "Transaction not found" });
+      return res.status(400).json({ message: "Transaction not found" });
     }
 
-    if (transaction.status !== "Issued") {
-      return res.status(400).json({ message: "Transaction is not in Issued status" });
-    }
-
-    const today = new Date();
-    const returnDate = new Date(transaction.returnDate);
-    const overdueDays = Math.max(0, Math.floor((today - returnDate) / (1000 * 60 * 60 * 24)));
-    const fineAmount = overdueDays * 2;
-
+    // Update return date and status
+    transaction.returnDate = returnDate;
     transaction.status = "Returned";
-    transaction.fineAmount = fineAmount;
-    await transaction.save();
 
-    const book = await Book.findById(transaction.book._id);
+    // Calculate fine if overdue
+    if (new Date(returnDate) > new Date(transaction.issueDate).setDate(new Date(transaction.issueDate).getDate() + 14)) { // assuming 14 days is the return period
+      const overdueDays = Math.ceil((new Date(returnDate) - new Date(transaction.issueDate)) / (1000 * 3600 * 24));
+      transaction.fineAmount = overdueDays * 5; // fine per day (e.g., 5 currency units per day)
+    }
+
+    // Save transaction and update book availability
+    await transaction.save();
+    const book = await Book.findById(transaction.book);
     book.availableCopies += 1;
     await book.save();
 
-    res.status(200).json({ message: "Transaction marked as returned", transaction });
+    res.status(200).json({ message: "Book returned successfully", transaction });
   } catch (error) {
-    res.status(500).json({ message: "Error updating transaction", error });
+    res.status(500).json({ message: "Error returning book", error });
   }
 });
 
