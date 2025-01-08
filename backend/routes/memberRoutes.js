@@ -1,5 +1,6 @@
 const express = require("express");
 const Member = require("../models/Member");
+const User = require("../models/User");
 
 const router = express.Router();
 
@@ -17,9 +18,9 @@ router.get("/", async (req, res) => {
 // @desc Add a new member
 // @route POST /api/members
 router.post("/", async (req, res) => {
-    const { name, email, phone, membershipType, address } = req.body;
+    const { name, email, phoneNumber, membershipType,role} = req.body;
   
-    if (!name || !email || !phone || !membershipType) {
+    if (!name || !email || !phoneNumber || !membershipType || !role) {
       return res.status(400).json({ message: "All fields are required" });
     }
   
@@ -35,10 +36,10 @@ router.post("/", async (req, res) => {
       const newMember = new Member({
         name,
         email,
-        phone,
+        phoneNumber,
         membershipType,
         maxBooksAllowed,
-        address,
+        isActive,
       });
   
       const savedMember = await newMember.save();
