@@ -17,10 +17,10 @@ router.get("/", async (req, res) => {
 // @route POST /api/staff
 // @desc Add a new staff member
 router.post("/", async (req, res) => {
-  const { name, email, role, phone } = req.body;
+  const { name, email, staffRole, phoneNumber } = req.body;
 
   // Validate fields
-  if (!name || !email || !role || !phone) {
+  if (!name || !email || !staffRole || !phoneNumber) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -33,8 +33,8 @@ router.post("/", async (req, res) => {
     const newStaff = new Staff({
       name,
       email,
-      role,
-      phone,
+      staffRole,
+      phoneNumber,
     });
 
     const savedStaff = await newStaff.save();
