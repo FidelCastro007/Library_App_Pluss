@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "./axios";
 import { useNavigate, useParams } from "react-router-dom";
 import "../App.css";
+import 'animate.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Home() {
   const [title, setTitle] = useState("");
@@ -16,6 +18,8 @@ function Home() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isFeatured, setIsFeatured] = useState(false);
+
+  const genres = ["Fiction", "Non-Fiction", "Sci-Fi", "Biography", "Mystery", "Fantasy"];
 
   useEffect(() => {
     if (id) {
@@ -95,13 +99,22 @@ function Home() {
           onChange={(e) => setAuthor(e.target.value)}
           required
         />
-        <input
-          type="text"
-          placeholder="Genre ex:Fiction, Non-Fiction, Sci-Fi, Biography"
-          value={genre}
-          onChange={(e) => setGenre(e.target.value)}
-          required
-        />
+        <div className="select-container">
+          <select
+            value={genre}
+            onChange={(e) => setGenre(e.target.value)}
+            required
+          >
+            <option value="" disabled>
+              Select Genre
+            </option>
+            {genres.map((g) => (
+              <option key={g} value={g}>
+                {g}
+              </option>
+            ))}
+          </select>
+        </div>
         <input
           type="number"
           placeholder="Rating (1-5)"
@@ -138,7 +151,7 @@ function Home() {
           />
           Featured Book
         </label>
-        <button class="book-btn" type="submit">{id ? "Save" : "Add"}</button>
+        <button className="book-btn" type="submit">{id ? "Save" : "Add"}</button>
       </form>
     </div>
   );
