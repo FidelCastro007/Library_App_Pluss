@@ -39,7 +39,7 @@ h2 {
 
 
 /* Styling for the select dropdown */
-select {
+/* select {
   padding: 0.5rem;
   font-size: 1rem;
   border: 1px solid #ccc;
@@ -51,13 +51,13 @@ select {
 }
 
 select:hover {
-  background-color: #e6e6e6; /* Slight hover effect */
+  background-color: #e6e6e6; /* Slight hover effect 
 }
 
 select:focus {
-  border-color: #007BFF; /* Highlight on focus */
+  border-color: #007BFF; /* Highlight on focus 
   outline: none;
-}
+} */
 
 /* Styling for the checkbox and label */
 label {
@@ -94,7 +94,7 @@ input[type="checkbox"] {
 /* Navbar */
 .navbar {
   display: flex;
-  width: 500px;
+  width: 1000px;
   justify-content: center; /* Center align the links *
   background-color: #f4f4f4; /* Light background for the navbar */
   padding: 5px 0; /* Add vertical spacing */
@@ -155,7 +155,23 @@ input[type="checkbox"] {
   align-items: center;
   min-height: 50vh;
   background-color: var(--background-color);
-  padding: 20px;
+  box-shadow: var(--box-shadow);
+  padding: 30px;
+  animation: bounce-in 0.8s ease-in-out;
+}
+
+/* Form Container */
+.form-container {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  background: var(--background-color);
+  padding: 10px;
+  border-radius: var(--radius);
+  box-shadow: var(--box-shadow);
+  max-width: 700px;
+  width: 90%;
 }
 
 /* Home Button */
@@ -231,30 +247,112 @@ input[type="checkbox"] {
 }
 
 /* Genre Dropdown */
-.genre-select {
-  padding: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: var(--radius);
-  background-color: #f8f8f8;
+/* Container styles */
+.select-container {
+  position: relative;
+  width: 400px;
+  margin: 10px auto;
+}
+
+.Book-container {
+  position: relative;
+  width: 550px;
+  margin: 10px auto;
+}
+
+.Reg-select-container {
+  position: relative;
+  width: 250px;
+  margin: 2px auto;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease,opacity 0.5s ease, transform 0.5s ease;
+  animation: fade-in-fields 1s ease-in-out;
+}
+
+select {
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  background-color: #f0f0f0;
+  border: 2px solid #007BFF;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  appearance: none;
+  transition: all 0.3s ease-in-out;
   cursor: pointer;
-  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease;
 }
 
-.genre-select:hover {
-  background-color: #e6e6e6;
+/* Hover and focus animations */
+select:hover {
+  background-color: #e0f7ff;
+  border-color: #0056b3;
+  transform: scale(1.03);
 }
 
-.genre-select:focus {
-  border-color: #007BFF;
+select:focus {
+  background-color: #e6faff;
+  border-color: #003580;
   outline: none;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
 }
+
+/* Add a custom dropdown arrow */
+.select-container::after {
+  content: "▼";
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #333;
+  pointer-events: none;
+}
+
+.Book-container::after {
+  content: "▼";
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #333;
+  pointer-events: none;
+}
+
+.Reg-select-container::after {
+  content: "▼";
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #333;
+  pointer-events: none;
+}
+
+/* .Reg-select-container.hide {
+  opacity: 0;
+  transform: scaleY(0.8); /* Shrinks the element slightly 
+  pointer-events: none; /* Prevents interaction while hiding 
+} */
+
+/* Remove native dropdown arrow */
+select::-ms-expand {
+  display: none;
+}
+
+select:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
 
 /* Book Form Container */
 .book-form {
   margin: 1px auto;
-  max-width: 500px;
+  max-width: 650px;
   padding: 15px;
   background: var(--container-background);
   border-radius: var(--radius);
@@ -267,11 +365,12 @@ input[type="checkbox"] {
   text-align: center;
   color: var(--primary-color);
   margin-bottom: 0px;
-  margin-top: 1px;
+  margin-top: 3px;
   animation: slide-down 0.8s ease-out;
 }
 
 .book-form h2 {
+  margin-bottom: 1px;
   font-size: 1.5rem;
   color: var(--secondary-color);
   animation: slide-up 1s ease-out;
@@ -280,6 +379,25 @@ input[type="checkbox"] {
 /* Input Fields */
 .book-form input[type="text"],
 .book-form input[type="number"] {
+  width: 400px;
+  padding: 7px;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  animation: fade-in-fields 1s ease-in-out;
+}
+
+.book-form input[type="text"]:focus,
+.book-form input[type="number"]:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+.login-container input[type="email"],
+.login-container input[type="password"] {
   width: 100%;
   padding: 10px;
   margin-bottom: 10px;
@@ -290,8 +408,31 @@ input[type="checkbox"] {
   animation: fade-in-fields 1s ease-in-out;
 }
 
-.book-form input[type="text"]:focus,
-.book-form input[type="number"]:focus {
+.login-container input[type="email"]:focus,
+.login-container input[type="password"]:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+.register-container input[type="email"],
+.register-container input[type="password"],
+.register-container input[type="text"]
+{
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  animation: fade-in-fields 1s ease-in-out;
+}
+
+.register-container input[type="email"]:focus,
+.register-container input[type="password"]:focus,
+.register-container input[type="text"]
+{
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
@@ -307,7 +448,7 @@ input[type="checkbox"] {
 
 .book-form input[type="checkbox"] {
   width: 16px;
-  height: 16px;
+  height: 14px;
   margin-right: 10px;
 }
 
@@ -317,11 +458,12 @@ input[type="checkbox"] {
   color: white;
   border: none;
   border-radius: 5px;
-  padding: 10px 20px;
+  padding: 7px 20px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 1rem;
   animation: scale-up 1.5s ease-in-out;
+  text-align: center;
 }
 
 .book-form button:hover {
@@ -398,7 +540,72 @@ input[type="checkbox"] {
 .success {
   color: green;
   font-weight: bold;
+  animation: fadeIn 1s ease-in, fadeOut 7s ease-in 1s; /* Combines fadeIn and fadeOut */
+  animation-fill-mode: forwards; /* Ensures styles persist after animation ends */
 }
+
+.error {
+  color: red;
+  font-weight: bold;
+  font-size: 1.1rem;
+  background-color: #f8d7da;
+  padding: 10px;
+  border-radius: 5px;
+  animation: fadeIn 1s ease-in;
+}
+
+/* FadeIn animation */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* FadeOut animation */
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animated-p {
+  color: #357abf;
+  font-size: medium;
+  font-weight: bold;
+  position: relative;
+  opacity: 0;
+  animation: fadeInSlide 1.5s ease-out forwards;
+}
+
+.animated-p:nth-child(1) {
+  animation-delay: 1.5s; /* Delay for the Email paragraph */
+}
+
+.animated-p:nth-child(2) {
+  animation-delay: 1s; /* Delay for the Role paragraph */
+}
+
+.animated-p:nth-child(3) {
+  animation-delay: 0.5s; /* Delay for the Role paragraph */
+}
+
+@keyframes fadeInSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(20px); /* Start slightly below */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0); /* End at normal position */
+  }
+}
+
 
 form {
   background-color: white;
@@ -522,11 +729,88 @@ p {
   animation: fade-in 0.5s ease-in-out;
 }
 
+/* Transaction Form Styling */
+.form-container {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: 20px auto;
+  opacity: 0;
+  animation: fadeInUp 0.6s forwards; /* Apply animation */
+}
+
+.form-container h3 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.form-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.form-container button {
+  width: 100%;
+  padding: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.form-container button:hover {
+  background-color: #45a049;
+}
+
+/* Animation for form entry */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Status class for animations */
+.status-issued {
+  color: #ff9800;
+  font-weight: bold;
+}
+
+/* Table for transactions */
+.transaction-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
 .transaction-table th,
 .transaction-table td {
-  text-align: left;
   padding: 12px;
+  text-align: left;
   border-bottom: 1px solid #ddd;
+}
+
+
+
+/* Additional transition for table rows */
+.transaction-table td {
+  transition: background-color 0.3s ease;
+}
+
+.transaction-table td:hover {
+  background-color: #eaeaea;
 }
 
 .transaction-table th {
@@ -621,6 +905,83 @@ p {
   }
 }
 
+@media (max-width: 768px) {
+  .form-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .login-container,
+  .register-container {
+    width: 90%;
+  }
+}
+
+
+/* Form Title */
+/* h2 {
+  color: var(--primary-color);
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Input Fields 
+form input {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  transition: border-color var(--transition-duration), box-shadow var(--transition-duration);
+}
+
+form input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 6px rgba(74, 144, 226, 0.5);
+}
+
+/* Buttons 
+form .btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: var(--radius);
+  color: #fff;
+  cursor: pointer;
+  background: var(--btn-gradient);
+  box-shadow: var(--box-shadow);
+  transition: all var(--transition-duration);
+}
+
+form .btn:hover {
+  background: linear-gradient(135deg, #357abf, #1e5f93);
+  box-shadow: var(--hover-shadow);
+}
+
+/* Links 
+form p {
+  text-align: center;
+  color: var(--text-color);
+  margin-top: 10px;
+}
+
+form p a {
+  color: var(--primary-color);
+  font-weight: bold;
+  text-decoration: none;
+  transition: color var(--transition-duration);
+}
+
+form p a:hover {
+  color: var(--accent-color);
+} */
 /* Buttons */
 /* button {
   background: var(--button-gradient);
