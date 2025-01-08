@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "./axios"; // Import the custom axios instance
 import { useNavigate } from "react-router-dom";
+import 'animate.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -22,8 +24,9 @@ function Login() {
 
   return (
     <div className="login-container">
-      <form onSubmit={handleLogin}>
-        <h2>Login</h2>
+      <form class="form-container" onSubmit={handleLogin}>
+      <h2 className="animate__animated animate__bounce text-dark">Login</h2>
+      {error && <p>{error}</p>}
         <input
           type="email"
           placeholder="Email"
@@ -39,7 +42,11 @@ function Login() {
           required
         />
         <button class="login-btn" type="submit">Login</button>
-        {error && <p>{error}</p>}
+        <div className="mt-3 text-center">
+          <a href="/register" className="text-decoration-none" style={{ color: '#007bff' }}>
+            Don't have an account? Register here
+          </a>
+        </div>
       </form>
     </div>
   );
