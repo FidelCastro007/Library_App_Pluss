@@ -85,12 +85,13 @@ function Book() {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <select onChange={(e) => setSortOption(e.target.value)}>
-        <option value="">Sort By</option>
-        <option value="rating">Rating</option>
-        <option value="genre">Genre</option>
-      </select>
-
+      <div className="Book-container">
+        <select onChange={(e) => setSortOption(e.target.value)}>
+          <option value="">Sort By</option>
+          <option value="rating">Rating</option>
+          <option value="genre">Genre</option>
+        </select>
+      </div>
       {/* Display message */}
       {message && <div className="message">{message}</div>}
 
