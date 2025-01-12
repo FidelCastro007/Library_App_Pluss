@@ -9,7 +9,8 @@ function Transaction() {
   const [staffId, setStaffId] = useState("");
   const [transactionId, setTransactionId] = useState("");
   const [returnDate, setReturnDate] = useState("");
-  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState(""); // State for success message
 
   // Fetch transactions on mount
   useEffect(() => {
@@ -17,8 +18,11 @@ function Transaction() {
       try {
         const response = await axios.get("/transactions");
         setTransactions(response.data);
+        setMessage("Fetched successfully!");
       } catch (error) {
         console.error("Error fetching transactions:", error);
+        setError("Error fetching transactions", error);
+        setMessage("");
       }
     };
     fetchTransactions();
@@ -27,7 +31,7 @@ function Transaction() {
   // Handle issue book
   const handleIssue = async () => {
     try {
-      const response = await axios.post("/api/transactions/issue", {
+      const response = await axios.post("/transactions/issue", {
         memberId,
         bookId,
         staffId,
@@ -35,14 +39,14 @@ function Transaction() {
       setMessage(response.data.message);
       setTransactions((prev) => [response.data.transaction, ...prev]);
     } catch (error) {
-      setMessage(error.response?.data?.message || "Error issuing book");
+      setError(error.response?.data?.message || "Error issuing book");
     }
   };
 
   // Handle return book
   const handleReturn = async () => {
     try {
-      const response = await axios.post("/api/transactions/return", {
+      const response = await axios.post("/transactions/return", {
         transactionId,
         returnDate,
       });
@@ -54,14 +58,15 @@ function Transaction() {
         )
       );
     } catch (error) {
-      setMessage(error.response?.data?.message || "Error returning book");
+      setError(error.response?.data?.message || "Error returning book");
     }
   };
 
   return (
     <div className="transaction-container">
       <h2 className="transaction-title">Transactions</h2>
-
+      {error && <p className="error">{error}</p>}
+      {message && <p className="success">{message}</p>} {/* Success message */}
       {/* Issue Book Form */}
       <div className="form-container">
         <h3>Issue a Book</h3>
@@ -108,7 +113,7 @@ function Transaction() {
       </div>
 
       {/* Display Message */}
-      {message && <p>{message}</p>}
+      {message && <p className="success">{message}</p>} {/* Success message */}
 
       {/* Transactions Table */}
       <table className="transaction-table animate-slide-in">
