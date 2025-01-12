@@ -21,10 +21,20 @@ function Register() {
     e.preventDefault();
   
     // Basic validation
-    if (!email || !password || !name || !phoneNumber || !role || !staffRole) {
-      setError("All required fields must be filled");
-      return;
-    }
+  if (!name || !email || !password || !phoneNumber || !role) {
+    setError("All required fields must be filled.");
+    return;
+  }
+
+  if (role === "Member" && !membershipType) {
+    setError("Membership type is required for Members.");
+    return;
+  }
+
+  if (role === "Staff" && !staffRole) {
+    setError("Staff role is required for Staff.");
+    return;
+  }
   
     // Log the data being sent to the backend
     console.log({
@@ -45,8 +55,8 @@ function Register() {
         password,
         phoneNumber,
         role,
-        membershipType,
-        staffRole
+        membershipType: role === "Member" ? membershipType : undefined,
+        staffRole: role === "Staff" ? staffRole : undefined,
       });
   
       setMessage("Registration successful! Redirecting to login...");
@@ -60,7 +70,7 @@ function Register() {
 
   return (
     <div className="register-container">
-      <form class="form-container" onSubmit={handleRegister}>
+      <form class="form-containers" onSubmit={handleRegister}>
       {error && <p className="error">{error}</p>}
       {message && <p className="success">{message}</p>} {/* Success message */}
       <h2 className="animate__animated animate__bounce text-dark">Register</h2>
