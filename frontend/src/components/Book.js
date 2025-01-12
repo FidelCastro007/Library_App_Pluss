@@ -93,7 +93,7 @@ function Book() {
         </select>
       </div>
       {/* Display message */}
-      {message && <div className="message">{message}</div>}
+      {message && <div className="success">{message}</div>}
 
       <div className="book-grid">
         {filteredBooks.map((book) => (
