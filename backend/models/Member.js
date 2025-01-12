@@ -4,7 +4,8 @@ const memberSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, unique: true, required: true },
   phoneNumber: { type: String, match: /^\d{10}$/, required: true },
-  membershipType: { type: String, enum: ["Basic", "Premium", "Elite"], required: true },
+  membershipType: { type: String, enum: ["Basic", "Premium", "Elite"], required: function () { return this.role === "Member"; },
+},
   maxBooksAllowed: {
     type: Number,
     default: function () {
