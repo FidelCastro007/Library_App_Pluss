@@ -13,8 +13,16 @@ router.post("/register", async (req, res) => {
 
   try {
     // Validate required fields
-    if (!name || !email || !password || !phoneNumber || !role || !membershipType || !staffRole) {
+    if (!name || !email || !password || !phoneNumber || !role) {
       return res.status(400).json({ error: "All required fields must be provided." });
+    }
+
+    if (role === "Member" && !membershipType) {
+      return res.status(400).json({ error: "Membership type is required for Members." });
+    }
+
+    if (role === "Staff" && !staffRole) {
+      return res.status(400).json({ error: "Staff role is required for Staff." });
     }
 
     // Check if email already exists
@@ -33,8 +41,8 @@ router.post("/register", async (req, res) => {
       password: hashedPassword,
       phoneNumber,
       role,
-      membershipType,
-      staffRole, // Ensure staffRole is saved if provided
+      membershipType: role === "Member" ? membershipType : undefined,
+      staffRole: role === "Staff" ? staffRole : undefined, // Ensure staffRole is saved if provided
     });
 
     // Save User
