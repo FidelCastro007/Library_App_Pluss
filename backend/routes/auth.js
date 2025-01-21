@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const Member = require("../models/Member"); // Import Member model
 const Staff = require("../models/Staff");
+const { checkBlacklist } = require("./logout");
 
 const router = express.Router();
 
@@ -115,6 +116,11 @@ router.get("/", async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Error retrieving members.", details: err.message });
   }
+});
+
+// Token Validation Route
+router.get("/validate", checkBlacklist, (req, res) => {
+  res.status(200).json({ message: "Token is valid" });
 });
 
 module.exports = router;
