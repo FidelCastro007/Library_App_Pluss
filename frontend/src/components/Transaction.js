@@ -17,104 +17,47 @@ function Transaction() {
     const fetchTransactions = async () => {
       try {
         const response = await axios.get("/transactions");
+        console.log(response.data); // Log the response to verify data
         setTransactions(response.data);
-        setMessage("Fetched successfully!");
+        setMessage("Transactions fetched successfully!");
+        setError(""); // Reset error message if successful
       } catch (error) {
         console.error("Error fetching transactions:", error);
-        setError("Error fetching transactions", error);
-        setMessage("");
+        setError("Error fetching transactions");
+        setMessage(""); // Reset success message if an error occurs
       }
     };
     fetchTransactions();
   }, []);
 
-  // Handle issue book
-  const handleIssue = async () => {
-    try {
-      const response = await axios.post("/transactions/issue", {
-        memberId,
-        bookId,
-        staffId,
-      });
-      setMessage(response.data.message);
-      setTransactions((prev) => [response.data.transaction, ...prev]);
-    } catch (error) {
-      setError(error.response?.data?.message || "Error issuing book");
-    }
-  };
+  // Handle form submission to filter transactions based on memberId, bookId, etc.
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    const searchParams = {};
 
-  // Handle return book
-  const handleReturn = async () => {
+    if (memberId) searchParams.memberId = memberId;
+    if (bookId) searchParams.bookId = bookId;
+    if (staffId) searchParams.staffId = staffId;
+    if (transactionId) searchParams.transactionId = transactionId;
+    if (returnDate) searchParams.returnDate = returnDate;
+
     try {
-      const response = await axios.post("/transactions/return", {
-        transactionId,
-        returnDate,
-      });
-      setMessage(response.data.message);
-      const updatedTransaction = response.data.transaction;
-      setTransactions((prev) =>
-        prev.map((txn) =>
-          txn._id === updatedTransaction._id ? updatedTransaction : txn
-        )
-      );
+      const response = await axios.get("/transactions", { params: searchParams });
+      setTransactions(response.data);
+      setMessage("Search results fetched successfully!");
+      setError(""); // Reset error message if successful
     } catch (error) {
-      setError(error.response?.data?.message || "Error returning book");
+      console.error("Error fetching filtered transactions:", error);
+      setError("Error fetching filtered transactions");
+      setMessage(""); // Reset success message if an error occurs
     }
   };
 
   return (
     <div className="transaction-container">
-      <h2 className="transaction-title">Transactions</h2>
+      <h2 className="animate__animated animate__bounce text-dark">Transactions</h2>
       {error && <p className="error">{error}</p>}
       {message && <p className="success">{message}</p>} {/* Success message */}
-      {/* Issue Book Form */}
-      <div className="form-container">
-        <h3>Issue a Book</h3>
-        <form onSubmit={(e) => e.preventDefault()}>
-          <input
-            type="text"
-            placeholder="Member ID"
-            value={memberId}
-            onChange={(e) => setMemberId(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Book ID"
-            value={bookId}
-            onChange={(e) => setBookId(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Staff ID"
-            value={staffId}
-            onChange={(e) => setStaffId(e.target.value)}
-          />
-          <button onClick={handleIssue}>Issue</button>
-        </form>
-      </div>
-
-      {/* Return Book Form */}
-      <div className="form-container">
-        <h3>Return a Book</h3>
-        <form onSubmit={(e) => e.preventDefault()}>
-          <input
-            type="text"
-            placeholder="Transaction ID"
-            value={transactionId}
-            onChange={(e) => setTransactionId(e.target.value)}
-          />
-          <input
-            type="date"
-            value={returnDate}
-            onChange={(e) => setReturnDate(e.target.value)}
-          />
-          <button onClick={handleReturn}>Return</button>
-        </form>
-      </div>
-
-      {/* Display Message */}
-      {message && <p className="success">{message}</p>} {/* Success message */}
-
       {/* Transactions Table */}
       <table className="transaction-table animate-slide-in">
         <thead>
@@ -130,8 +73,9 @@ function Transaction() {
         <tbody>
           {transactions.map((txn) => (
             <tr key={txn._id}>
-              <td>{txn.member.name}</td>
-              <td>{txn.book.title}</td>
+              {/* Safely access member and book properties */}
+              <td>{txn.member ? txn.member.name : "N/A"}</td>
+              <td>{txn.book ? txn.book.title : "N/A"}</td>
               <td>{new Date(txn.issueDate).toLocaleDateString()}</td>
               <td>{txn.returnDate ? new Date(txn.returnDate).toLocaleDateString() : "N/A"}</td>
               <td className={`status-${txn.status.toLowerCase()}`}>{txn.status}</td>
@@ -140,6 +84,44 @@ function Transaction() {
           ))}
         </tbody>
       </table>
+
+      <h2 className="search-form-heading">
+       Transactions Search Form <i className="fa fa-search"></i>
+      </h2>
+      {/* Search Form */}
+      <form onSubmit={handleSearch} className="form-container">
+        <input
+          type="text"
+          placeholder="Member ID"
+          value={memberId}
+          onChange={(e) => setMemberId(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Book ID"
+          value={bookId}
+          onChange={(e) => setBookId(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Staff ID"
+          value={staffId}
+          onChange={(e) => setStaffId(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Transaction ID"
+          value={transactionId}
+          onChange={(e) => setTransactionId(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Return Date"
+          value={returnDate}
+          onChange={(e) => setReturnDate(e.target.value)}
+        />
+        <button type="submit">Search</button>
+      </form>
     </div>
   );
 }
