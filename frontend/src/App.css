@@ -551,7 +551,8 @@ select:disabled {
   background-color: #f8d7da;
   padding: 10px;
   border-radius: 5px;
-  animation: fadeIn 1s ease-in;
+  animation: fadeIn 1s ease-in, fadeOut 10s ease-in 1s;
+  animation-fill-mode: forwards; /* Ensures styles persist after animation ends */
 }
 
 /* FadeIn animation */
@@ -845,6 +846,91 @@ p {
   color: var(--accent-color);
 }
 
+/* Fancy heading styles */
+.fancy-heading {
+  font-family: 'Poppins', sans-serif; /* Use a modern font */
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #4a90e2; /* Fancy color */
+  text-align: center;
+  text-transform: uppercase;
+  position: relative;
+  margin-bottom: 20px;
+  animation: glow 1.5s infinite ease-in-out;
+}
+
+/* Add a gradient line below the heading */
+.fancy-heading::after {
+  content: "";
+  display: block;
+  width: 50%;
+  height: 4px;
+  margin: 0.5rem auto 0;
+  background: linear-gradient(90deg, #ff7eb3, #4a90e2);
+  border-radius: 2px;
+}
+
+.fancy-heading:hover {
+  color: #ff7eb3;
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
+
+/* Fancy heading styles for Transactions Search Form */
+.search-form-heading {
+  font-family: 'Poppins', sans-serif; /* Modern and readable font */
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #2c3e50; /* Elegant dark shade */
+  text-align: center;
+  text-transform: capitalize;
+  position: relative;
+  margin: 20px 0;
+}
+
+/* Add decorative underline */
+.search-form-heading::after {
+  content: "🔍"; /* A search icon for context */
+  display: block;
+  margin: 0.5rem auto 0;
+  font-size: 1.5rem;
+  color: #4a90e2; /* Match the main heading color scheme */
+  animation: bounce 1s infinite; /* Subtle bounce animation */
+}
+
+.search-form-heading:hover {
+  color: #4a90e2;
+  transform: scale(1.05);
+  transition: all 0.3s ease-in-out;
+}
+
+
+/* Optional bounce animation for the icon */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+
+
+/* Glow animation */
+@keyframes glow {
+  0% {
+    text-shadow: 0 0 10px #4a90e2, 0 0 20px #4a90e2, 0 0 30px #ff7eb3, 0 0 40px #ff7eb3;
+  }
+  50% {
+    text-shadow: 0 0 20px #ff7eb3, 0 0 30px #4a90e2, 0 0 50px #4a90e2, 0 0 70px #ff7eb3;
+  }
+  100% {
+    text-shadow: 0 0 10px #4a90e2, 0 0 20px #4a90e2, 0 0 30px #ff7eb3, 0 0 40px #ff7eb3;
+  }
+}
+
+
 /* Animations */
 @keyframes fade-in {
   from {
@@ -886,6 +972,23 @@ p {
   100% {
     transform: translateX(100%);
   }
+}
+
+/* Slide-in animation */
+@keyframes slide-in {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Apply the animation to elements with the 'animate-slide-in' class */
+.animate-slide-in {
+  animation: slide-in 0.8s ease-out;
 }
 
 /* Responsive Design */
