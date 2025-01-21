@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 const AutoIncrement = require("mongoose-sequence")(mongoose);
 
 const transactionSchema = new mongoose.Schema({
-  member: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  member: { type: mongoose.Schema.Types.ObjectId, ref: "Member", required: true },
   book: { type: mongoose.Schema.Types.ObjectId, ref: "Book", required: true },
-  issuedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  issuedBy: { type: mongoose.Schema.Types.ObjectId, ref: "Staff", required: true },
   issueDate: { type: Date, default: Date.now },
   returnDate: { type: Date },
   status: { type: String, enum: ["Issued", "Returned"], default: "Issued" },
