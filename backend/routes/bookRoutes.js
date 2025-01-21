@@ -1,5 +1,6 @@
 const express = require("express");
 const Book = require("../models/Book");
+const Transaction = require('../models/Transaction'); // Assuming you have a Transaction model
 
 const router = express.Router();
 
@@ -80,43 +81,6 @@ router.delete("/:id", async (req, res) => {
     res.status(200).json({ message: "Book deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error deleting book", error });
-  }
-});
-
-// @route PATCH /api/books/:id/issue
-// @desc Issue a book
-router.patch("/:id/issue", async (req, res) => {
-  try {
-    const book = await Book.findById(req.params.id);
-    if (!book) {
-      return res.status(404).json({ message: "Book not found" });
-    }
-    if (book.availableCopies <= 0) {
-      return res.status(400).json({ message: "No available copies to issue" });
-    }
-
-    book.availableCopies -= 1;
-    await book.save();
-    res.status(200).json({ message: "Book issued successfully", book });
-  } catch (error) {
-    res.status(500).json({ message: "Error issuing book", error });
-  }
-});
-
-// @route PATCH /api/books/:id/return
-// @desc Return a book
-router.patch("/:id/return", async (req, res) => {
-  try {
-    const book = await Book.findById(req.params.id);
-    if (!book) {
-      return res.status(404).json({ message: "Book not found" });
-    }
-
-    book.availableCopies += 1;
-    await book.save();
-    res.status(200).json({ message: "Book returned successfully", book });
-  } catch (error) {
-    res.status(500).json({ message: "Error returning book", error });
   }
 });
 
