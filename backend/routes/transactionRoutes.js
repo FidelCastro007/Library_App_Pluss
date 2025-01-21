@@ -1,8 +1,9 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const Transaction = require("../models/Transaction");
-const Book = require("../models/Book");
-const User = require("../models/User");
+const express = require('express');
+const mongoose = require('mongoose');
+const Transaction = require('../models/Transaction');
+const Book = require('../models/Book');
+const Member = require('../models/Member'); // Assuming you have a Member model
+const Staff = require('../models/Staff'); // Assuming you have a Staff model
 
 const router = express.Router();
 const FINE_RATE = 5; // Configurable fine per day
@@ -17,6 +18,10 @@ router.get("/", async (req, res) => {
     const transactions = await Transaction.find()
       .populate("member", "name")
       .populate("book", "title");
+
+      if (!transactions) {
+        return res.status(404).json({ message: "No transactions found" });
+      }
     res.status(200).json(transactions);
   } catch (error) {
     console.error("Error fetching transactions:", error);
@@ -36,11 +41,12 @@ router.post("/issue", async (req, res) => {
 
   try {
     const book = await Book.findById(bookId);
-    const member = await User.findById(memberId);
+    const member = await Member.findById(memberId);
+    const staff = await Staff.findById(staffId);
 
     // Validate book and member existence
-    if (!book || !member) {
-      return res.status(404).json({ message: "Book or Member not found" });
+    if (!book || !member || !staff) {
+      return res.status(404).json({ message: "Book, member, or staff not found" });
     }
 
     // Check if book is available
@@ -48,12 +54,17 @@ router.post("/issue", async (req, res) => {
       return res.status(400).json({ message: "No available copies to issue" });
     }
 
-    // Create transaction
-    const transaction = new Transaction({
+    // Calculate default return date (14 days after issue date)
+    const defaultReturnDate = new Date();
+    defaultReturnDate.setDate(defaultReturnDate.getDate() + 14);
+
+     // Create transaction
+     const transaction = new Transaction({
       member: memberId,
       book: bookId,
       issuedBy: staffId,
       issueDate: new Date(),
+      returnDate: defaultReturnDate,
       status: "Issued",
     });
 
@@ -84,7 +95,7 @@ router.post("/return", async (req, res) => {
   }
 
   try {
-    const transaction = await Transaction.findById(transactionId);
+    const transaction = await Transaction.findById(transactionId).populate('book member');
     if (!transaction) {
       return res.status(404).json({ message: "Transaction not found" });
     }
@@ -121,6 +132,20 @@ router.post("/return", async (req, res) => {
   } catch (error) {
     console.error("Error returning book:", error);
     res.status(500).json({ message: "Error returning book", error });
+  }
+});
+
+// @route DELETE /api/transactions/:id
+// @desc Delete a transaction
+router.delete("/:id", async (req, res) => {
+  try {
+    const deletedTransaction = await Transaction.findByIdAndDelete(req.params.id);
+    if (!deletedTransaction) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+    res.status(200).json({ message: "Transaction deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting transaction", error });
   }
 });
 
