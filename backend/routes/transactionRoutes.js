@@ -1,27 +1,50 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const Transaction = require('../models/Transaction');
-const Book = require('../models/Book');
-const Member = require('../models/Member'); // Assuming you have a Member model
-const Staff = require('../models/Staff'); // Assuming you have a Staff model
-
+const express = require("express");
+const mongoose = require("mongoose");
+const Transaction = require("../models/Transaction");
+const Book = require("../models/Book");
+const Member = require("../models/Member");
+const Staff = require("../models/Staff");
 const router = express.Router();
-const FINE_RATE = 5; // Configurable fine per day
 
+const FINE_RATE = 10; // Define fine rate for overdue books
 // Utility function to validate ObjectId
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+
+// Utility function to format the response
+const formatTransactionResponse = (transaction) => {
+  return {
+    transactionId: transaction.transactionId,
+    member: transaction.member,
+    book: transaction.book,
+    issuedBy: transaction.issuedBy,
+    issueDate: transaction.issueDate,
+    returnDate: transaction.returnDate,
+    status: transaction.status,
+    fineAmount: transaction.fineAmount,
+  };
+};
 
 // @route GET /api/transactions
 // @desc Get all transactions
 router.get("/", async (req, res) => {
+  const { memberId, bookId, staffId, transactionId, returnDate } = req.query;
+
+  // Build the filter object dynamically
+  const filters = {};
+  if (memberId) filters.member = memberId;
+  if (bookId) filters.book = bookId;
+  if (staffId) filters.issuedBy = staffId;
+  if (transactionId) filters._id = transactionId; // Match by ObjectId
+  if (returnDate) filters.returnDate = new Date(returnDate);
+
   try {
-    const transactions = await Transaction.find()
+    const transactions = await Transaction.find(filters)
       .populate("member", "name")
       .populate("book", "title");
 
-      if (!transactions) {
-        return res.status(404).json({ message: "No transactions found" });
-      }
+    if (!transactions.length) {
+      return res.status(404).json({ message: "No transactions found" });
+    }
     res.status(200).json(transactions);
   } catch (error) {
     console.error("Error fetching transactions:", error);
@@ -29,8 +52,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// @route POST /api/transactions/issue
-// @desc Issue a book to a member
+// Issue book route
 router.post("/issue", async (req, res) => {
   const { memberId, bookId, staffId } = req.body;
 
@@ -44,91 +66,102 @@ router.post("/issue", async (req, res) => {
     const member = await Member.findById(memberId);
     const staff = await Staff.findById(staffId);
 
-    // Validate book and member existence
     if (!book || !member || !staff) {
       return res.status(404).json({ message: "Book, member, or staff not found" });
     }
 
-    // Check if book is available
     if (book.availableCopies <= 0) {
       return res.status(400).json({ message: "No available copies to issue" });
     }
 
-    // Calculate default return date (14 days after issue date)
     const defaultReturnDate = new Date();
     defaultReturnDate.setDate(defaultReturnDate.getDate() + 14);
 
-     // Create transaction
-     const transaction = new Transaction({
+    const transaction = new Transaction({
       member: memberId,
       book: bookId,
       issuedBy: staffId,
       issueDate: new Date(),
       returnDate: defaultReturnDate,
       status: "Issued",
+      fineAmount: 0,  // Assuming fineAmount is 0 when issuing the book
     });
 
-    // Save transaction and update book availability
     await transaction.save();
     book.availableCopies -= 1;
     await book.save();
 
-    console.log(`Book issued: Transaction ID - ${transaction._id}`);
-    res.status(201).json({ message: "Book issued successfully", transaction });
+    // Format the response
+    res.status(201).json({
+      message: "Book issued successfully",
+      transaction: formatTransactionResponse(transaction),
+    });
   } catch (error) {
     console.error("Error issuing book:", error);
     res.status(500).json({ message: "Error issuing book", error });
   }
 });
 
-// @route POST /api/transactions/return
-// @desc Return a book and update status
+// @desc Return a book
 router.post("/return", async (req, res) => {
-  const { transactionId, returnDate } = req.body;
+  const { transactionId, bookId, memberId, staffId, returnDate } = req.body;
 
-  // Validate ObjectId and returnDate
-  if (!isValidObjectId(transactionId)) {
-    return res.status(400).json({ message: "Invalid transactionId" });
+  // Validate inputs
+  if (!transactionId || !isValidObjectId(transactionId)) {
+    return res.status(400).json({ message: "Invalid transaction ID" });
   }
-  if (!returnDate || isNaN(new Date(returnDate).getTime())) {
-    return res.status(400).json({ message: "Invalid returnDate" });
+  if (!bookId || !memberId || !staffId || !returnDate) {
+    return res.status(400).json({ message: "Missing required fields" });
   }
 
   try {
-    const transaction = await Transaction.findById(transactionId).populate('book member');
+    // Ensure the ID is cast to ObjectId
+    // const validTransactionId = mongoose.Types.ObjectId(transactionId);
+
+    // Find the existing transaction
+    const transaction = await Transaction.findOne({
+      transactionId: transactionId, // Use transactionId directly as a number
+      status: "Issued",
+    }).populate("member book");
+
     if (!transaction) {
-      return res.status(404).json({ message: "Transaction not found" });
+      return res.status(404).json({ message: "Transaction not found or already returned" });
     }
 
-    const book = await Book.findById(transaction.book);
+    const book = await Book.findById(bookId);
     if (!book) {
-      return res.status(404).json({ message: "Book not found for this transaction" });
+      return res.status(404).json({ message: "Book not found" });
     }
 
     // Validate return date
-    if (new Date(returnDate) < new Date(transaction.issueDate)) {
+    const parsedReturnDate = new Date(returnDate);
+    if (parsedReturnDate < transaction.issueDate) {
       return res.status(400).json({ message: "Return date cannot be earlier than issue date" });
     }
 
-    // Update return date and status
-    transaction.returnDate = new Date(returnDate);
+    // Update transaction
+    transaction.returnDate = parsedReturnDate;
     transaction.status = "Returned";
 
-    // Fine calculation
+    // Calculate fine if overdue
     const returnDeadline = new Date(transaction.issueDate);
-    returnDeadline.setDate(returnDeadline.getDate() + 14); // 14-day return period
-    if (new Date(returnDate) > returnDeadline) {
-      const overdueDays = Math.ceil((new Date(returnDate) - returnDeadline) / (1000 * 60 * 60 * 24));
+    returnDeadline.setDate(returnDeadline.getDate() + 14); // Set to 14 days after issue date
+
+    if (parsedReturnDate > returnDeadline) {
+      const overdueDays = Math.ceil((parsedReturnDate - returnDeadline) / (1000 * 60 * 60 * 24));
       transaction.fineAmount = overdueDays * FINE_RATE;
     }
 
-    // Save transaction and update book availability
     await transaction.save();
+
+    // Update book availability
     book.availableCopies += 1;
     await book.save();
 
-    console.log(`Book returned: Transaction ID - ${transaction._id}`);
-    res.status(200).json({ message: "Book returned successfully", transaction });
+    res.status(200).json({
+      message: "Book returned successfully",
+      transaction: formatTransactionResponse(transaction),
+    });
   } catch (error) {
     console.error("Error returning book:", error);
     res.status(500).json({ message: "Error returning book", error });
@@ -148,5 +181,33 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ message: "Error deleting transaction", error });
   }
 });
+
+// @route PUT /api/transactions/:id/update-fine
+// @desc Update the fine amount of a transaction
+router.put("/:id/update-fine", async (req, res) => {
+  const { fineAmount } = req.body;
+
+  if (fineAmount < 0) {
+    return res.status(400).json({ error: "Fine amount cannot be negative" });
+  }
+
+  try {
+    const transaction = await Transaction.findByIdAndUpdate(
+      req.params.id,
+      { fineAmount },
+      { new: true }
+    );
+
+    if (!transaction) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+
+    res.status(200).json({ message: "Fine updated successfully", transaction });
+  } catch (error) {
+    console.error("Error updating fine:", error);
+    res.status(500).json({ message: "Error updating fine", error });
+  }
+});
+
 
 module.exports = router;
