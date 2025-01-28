@@ -756,20 +756,82 @@ p {
   border: 1px solid #ccc;
 }
 
-.form-container button {
+/* .form-container button {
   width: 100%;
   padding: 10px;
   background-color: #4CAF50;
   color: white;
+  margin-bottom: 8px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 .form-container button:hover {
   background-color: #45a049;
+  transform: scale(1.05);
+} */
+
+/* Enter animations for buttons */
+@keyframes button-fade {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
+
+.animate-button-enter {
+  animation: button-fade 0.5s ease-in-out;
+}
+
+/* Refresh button styles */
+.refresh-button {
+  width: 150px;
+  padding: 10px;
+  background-color: #47a2cc;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.5;
+  transition: all 0.3s ease-in-out;
+}
+
+.refresh-button.enabled {
+  pointer-events: all;
+  cursor: pointer;
+  opacity: 1;
+}
+
+.refresh-button:hover {
+  background-color: #2b81a0;
+  transform: scale(1.05);
+}
+
+/* Search button styles */
+.search-button {
+  width: 150px;
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.search-button:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+
 
 /* Animation for form entry */
 @keyframes fadeInUp {
@@ -832,6 +894,44 @@ p {
   color: red;
   font-weight: bold;
 }
+
+/* Styles for the input and button */
+.update-fine-button {
+  background-color: #4CAF50; /* Green */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.update-fine-button:hover {
+  background-color: #45a049;
+}
+
+input[type="number"] {
+  padding: 8px;
+  font-size: 14px;
+  width: 100px;
+  margin-right: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+input[type="number"]:focus {
+  border-color: #4CAF50;
+  outline: none;
+}
+
+/* Adding spacing between cells */
+td {
+  padding: 12px;
+  text-align: center;
+}
+
 
 .book-card {
   padding: 20px;
@@ -904,6 +1004,30 @@ p {
   transition: all 0.3s ease-in-out;
 }
 
+/* Success animation for refresh */
+.animate-refresh {
+  animation: fade-in 0.6s ease-in-out, scale-up 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-up {
+  from {
+    transform: scale(0.95);
+  }
+  to {
+    transform: scale(1);
+  }
+}
 
 /* Optional bounce animation for the icon */
 @keyframes bounce {
@@ -914,8 +1038,6 @@ p {
     transform: translateY(-5px);
   }
 }
-
-
 
 /* Glow animation */
 @keyframes glow {
