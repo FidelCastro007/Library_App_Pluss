@@ -170,13 +170,20 @@ function Book() {
             : book
         )
       );
-      setMemberName(response.data.memberName);
-      setFine(response.data.fine);
-    } catch (error) {
-      console.error("Error returning book:", error);
-      setError("Failed to return the book.");
+     // Fetch member name from the members state
+    const member = members.find((member) => member._id === selectedMemberId);
+    if (member) {
+      setMemberName(member.name);
+    } else {
+      setMemberName("Unknown Member");
     }
-  };
+
+    setFine(response.data.fine);
+  } catch (error) {
+    console.error("Error returning book:", error);
+    setError("Failed to return the book.");
+  }
+};
   
   
 
@@ -268,7 +275,7 @@ function Book() {
             {memberName && (
               <div className="book-card">
                 <p>Member: {memberName}</p>
-                <p>Fine: ${fine}</p>
+                <p>Fine: {fine ? `$${fine}` : "N/A"}</p>
               </div>
             )}
           </div>
