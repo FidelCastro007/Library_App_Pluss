@@ -20,6 +20,7 @@ function Book() {
       try {
         const response = await axios.get("/books");
         setBooks(response.data);
+        console.log(response.data, "testing");
         setMessage("Fetched successfully!");
       } catch (error) {
         console.error("Error fetching books:", error);
@@ -87,39 +88,65 @@ function Book() {
   };
 
   const handleIssue = async (id) => {
+    // Log when the function is called
+    console.log(`handleIssue called with bookId: ${id}`);
+    
     if (!selectedMemberId || !selectedStaffId) {
+      console.log("Member or staff is not selected.");
       setError("Please select a member and a staff member.");
       return;
     }
   
+    console.log(`Issuing book to member: ${selectedMemberId}, staff: ${selectedStaffId}`);
+  
     try {
-      const response = await axios.post(`/transactions/issue`, {
+      // Log request payload
+      const requestPayload = {
         bookId: id,
         memberId: selectedMemberId,
         staffId: selectedStaffId,
-      });
-
-       // Logging the response to check if the transactionId is received correctly
-    console.log("Book issued:", response.data);
+      };
+      console.log("Request payload for issuing book:", requestPayload);
   
-      setMessage(`Book issued successfully! Transaction ID: ${response.data.transactionId}`);
-      setBooks(
-        books.map((book) =>
-          book._id === id
-            ? { ...book, availableCopies: book.availableCopies - 1, transactionId: response.data.transactionId } // Store the transactionId
-            : book
-        )
-      );
+      const response = await axios.post(`/transactions/issue`, requestPayload);
+  
+      // Log the full response from the server
+      console.log("Server response:", response);
+  
+      // Check if response contains valid data
+      if (response && response.data && response.data.transaction) {
+        // Log the updated book transaction
+        console.log("Updating book with transaction ID:", response.data.transaction.transactionId);
+  
+        // Update the book's transactionId in the state after issuing the book
+        setBooks(
+          books.map((book) =>
+            book._id === id
+              ? { 
+                  ...book, 
+                  availableCopies: book.availableCopies - 1, 
+                  transactionId: response.data.transaction.transactionId 
+                }
+              : book
+          )
+        );
+  
+        setMessage(`Book issued successfully! Transaction ID: ${response.data.transaction.transactionId}`);
+        console.log(`Book issued successfully! Transaction ID: ${response.data.transaction.transactionId}`);
+      } else {
+        console.error("No transaction data found in the response");
+        setError("Failed to issue the book. Invalid response.");
+      }
     } catch (error) {
       console.error("Error issuing book:", error);
       setError("Failed to issue the book.");
     }
-  };
+  };  
   
   const handleReturn = async (transactionId, bookId) => {
     console.log("Handling return for Transaction ID:", transactionId);
     console.log("Selected Book ID:", bookId);
-    
+  
     if (!selectedMemberId || !selectedStaffId || !transactionId) {
       setError("Please select a member, staff member, and ensure a transaction ID is provided.");
       return;
@@ -134,11 +161,12 @@ function Book() {
         returnDate: new Date().toISOString(), // Assuming return happens on the current date
       });
   
-      setMessage(`Book returned successfully! Transaction ID: ${response.data.transactionId}`);
-      setBooks(
-        books.map((book) =>
+       console.log(response.data); // Log the response to inspect it
+      setMessage(`Book returned successfully! Transaction ID: ${response.data.transaction.transactionId}`);
+      setBooks((prevBooks) =>
+        prevBooks.map((book) =>
           book._id === bookId
-            ? { ...book, availableCopies: book.availableCopies + 1, transactionId: null } // Clear transactionId after return
+            ? { ...book, availableCopies: book.availableCopies + 1, transactionId: null } // Clear transactionId
             : book
         )
       );
@@ -148,13 +176,14 @@ function Book() {
       console.error("Error returning book:", error);
       setError("Failed to return the book.");
     }
-  };  
+  };
+  
   
 
   // Clear message after 3 seconds
   useEffect(() => {
     if (message || error) { // Check if either message or error exists
-      const timer1 = setTimeout(() => setMessage(""), 3000);
+      const timer1 = setTimeout(() => setMessage(""), 7000);
       const timer2 = setTimeout(() => setError(""), 14000);
       return () => {
         clearTimeout(timer1);
@@ -225,16 +254,17 @@ function Book() {
             <button className="issue" onClick={() => handleIssue(book._id)}>
               Issue
             </button>
-            {/* {book.transactionId ? (
+            {book.transactionId ? (
               <button className="return" onClick={() => handleReturn(book.transactionId, book._id)}>
                 Return
               </button>
             ) : (
               <p>No active transaction for this book</p>
-            )} */}
-            <button className="return" onClick={() => handleReturn(book.transactionId, book._id)}>
+            )}
+            {/* <button className="return" onClick={() => handleReturn(book.transactionId, book._id)}  disabled={!book.transactionId} // Disable button if no active transaction
+            >
                 Return
-              </button>
+              </button> */}
             {memberName && (
               <div className="book-card">
                 <p>Member: {memberName}</p>
