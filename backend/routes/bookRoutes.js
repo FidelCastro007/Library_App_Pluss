@@ -6,12 +6,28 @@ const router = express.Router();
 
 // @route GET /api/books
 // @desc Get all books
+//@route GET /api/books
+// @desc Get all books with transaction details
 router.get("/", async (req, res) => {
   try {
     const books = await Book.find();
-    res.status(200).json(books);
+
+    const booksWithTransactions = await Promise.all(
+      books.map(async (book) => {
+        const transaction = await Transaction.findOne({ book: book._id }).sort({ createdAt: -1 }); // Fixed query
+        // console.log("Book:", book.title, "Transaction:", transaction); // Debugging
+        return {
+          ...book._doc,
+          transactionId: transaction ? transaction.transactionId : null,
+          transactionDetails: transaction || null, // Include full transaction details if needed
+        };
+      })
+    );
+
+    res.status(200).json(booksWithTransactions);
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving books", error });
+    console.error("Error retrieving books with transactions:", error);
+    res.status(500).json({ message: "Error retrieving books with transactions", error });
   }
 });
 
